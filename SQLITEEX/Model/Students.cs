@@ -22,16 +22,18 @@ namespace SQLITEEX.Model
         [Column("Student_Name")]
         public string sName { get; set; }
 
-        
+
+        [Column("Student_Surname")]
         public string sSurname { get; set; }
 
+        [Column("Student_Marks")]
         [MaxLength(2)]
         public int sMarks { get; set; }
 
-        [PrimaryKey,AutoIncrement]
+        [PrimaryKey, AutoIncrement]
         public int sId { get; set; }
 
-      
-        
+
+
     }
 }

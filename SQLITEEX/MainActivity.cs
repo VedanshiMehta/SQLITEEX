@@ -15,7 +15,7 @@ namespace SQLITEEX
         private EditText myName;
         private EditText mySurName;
         private EditText myMarks;
-       // private EditText myId;
+        // private EditText myId;
         private Button myAdd;
         private Button myView;
         StudentDatabase sDB;
@@ -29,8 +29,8 @@ namespace SQLITEEX
             UIReference();
             UIClickEvents();
             sDB.StudentTable();
-            
-            
+
+
         }
 
         private void UIClickEvents()
@@ -55,9 +55,22 @@ namespace SQLITEEX
             studs.sMarks = int.Parse(myMarks.Text);
             //studs.sId = int.Parse(myId.Text);
 
-            sDB.InstertStudents(studs);
+           bool checkinsert=  sDB.InstertStudents(studs);
+            if (checkinsert == true)
+            {
 
-       
+                Toast.MakeText(this, "Data Inserted Succesfully", ToastLength.Short).Show();
+
+            }
+            else
+            {
+
+                Toast.MakeText(this, "No action performed", ToastLength.Short).Show();
+
+
+            }
+
+
         }
 
         private void UIReference()
@@ -65,7 +78,6 @@ namespace SQLITEEX
             myName = FindViewById<EditText>(Resource.Id.editText1);
             mySurName = FindViewById<EditText>(Resource.Id.editText2);
             myMarks = FindViewById<EditText>(Resource.Id.editText3);
-           // myId = FindViewById<EditText>(Resource.Id.editText4);
             myAdd = FindViewById<Button>(Resource.Id.buttonA);
             myView = FindViewById<Button>(Resource.Id.buttonV);
         }

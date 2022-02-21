@@ -30,14 +30,14 @@ namespace SQLITEEX
                 Console.WriteLine(DBPath);
                 sqliteConnection = new SQLiteConnection(DBPath);
                 Console.WriteLine("Succefully Database Created!....");
-                //Toast.MakeText(Application.Context, "Succefully Database Created!....", ToastLength.Short).Show();
+               
 
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Database Exception:" + ex);
-               // Toast.MakeText(Application.Context,"Database Exception" + ex, ToastLength.Short).Show();
+              
             }
         }
 
@@ -47,48 +47,78 @@ namespace SQLITEEX
             {
                 var created = sqliteConnection.CreateTable<Students>();
                 Console.WriteLine("Succefully Table Created!....");
-                //Toast.MakeText(Application.Context, "Succefully Table Created!....", ToastLength.Short).Show();
+                
             }
 
             catch (Exception ex)
             {
                 Console.WriteLine("Database Exception:" + ex);
-                //Toast.MakeText(Application.Context,"Database Exception" + ex, ToastLength.Short).Show();
+             
             }
 
         }
 
-        public void InstertStudents(Students students)
+        public bool InstertStudents(Students students)
         {
 
-            try
+            
+              long result = sqliteConnection.Insert(students);
+              
+             
+           
+            if (result == -1)
             {
-                var result = sqliteConnection.Insert(students);
-                Console.WriteLine("Succefully Inserted Data "+ result);
-               // Toast.MakeText(Application.Context, "Succefully Data Inserted Created:", ToastLength.Short).Show();
+
+                return false;
             }
 
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("Database Exception:" + ex);
-                // Toast.MakeText(Application.Context,"Database Exception" + ex, ToastLength.Short).Show();
+                Console.WriteLine("Succefully Inserted Data ");
+                return true;
             }
+
 
         }
-        public void UpdateStudents(Students students)
+        public bool UpdateStudents(Students students)
         {
-            try
+
+            long result = sqliteConnection.Update(students);
+
+
+            if (result == 1)
             {
-                var result= sqliteConnection.Update(students);
-                Console.WriteLine("Succefully Update Data " + result);
-                // Toast.MakeText(Application.Context, "Succefully Table Created!....", ToastLength.Short).Show();
+               
+
+                Console.WriteLine("Succefully Updated Data ");
+                return true;
+            }   
+            else
+            {
+                Console.WriteLine("Not any action perform ");
+                return false;
+               
             }
 
-            catch (Exception ex)
-            {
-                Console.WriteLine("Database Exception:" + ex);
-                // Toast.MakeText(Application.Context,"Database Exception" + ex, ToastLength.Short).Show();
-            }
+
+        }
+
+        public bool DeleteStudents(Students students)
+        {
+            
+            
+                long result = sqliteConnection.Delete(students);
+                if (result == -1)
+                {
+
+                    return false;
+                }
+
+                else
+                {
+                    Console.WriteLine("Succefully Deleted Data ");
+                    return true;
+                }
 
 
         }
@@ -97,16 +127,23 @@ namespace SQLITEEX
         {
             try
             { 
-               return sqliteConnection.Table<Students>().ToList();
-              
+               var studentsDetails = sqliteConnection.Table<Students>().ToList();
+                return studentsDetails;
             }
 
             catch (Exception ex)
             {
                 Console.WriteLine("Database Exception:" + ex);
-                // Toast.MakeText(Application.Context,"Database Exception" + ex, ToastLength.Short).Show();
                 return null;
             }
+
+        }
+
+        public Students GetByUserId(int studentId)
+        {
+            var userId = sqliteConnection.Table<Students>().Where(u => u.sId == studentId).FirstOrDefault();
+
+            return userId;
 
         }
 
@@ -125,5 +162,9 @@ namespace SQLITEEX
             return userSurName;
 
         }
+
+        
+
+   
     }
 }

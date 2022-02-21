@@ -15,80 +15,81 @@ namespace SQLITEEX
 {
     class StudentAdapter : RecyclerView.Adapter
     {
-        private List<string> mystudentlist;
-        public event EventHandler<int> ItemClick;
+        private List<Students> studentslist;
         public Context context;
-        List<Students> data ;
-        StudentHolder studholder;
-     
-        public StudentAdapter(List<string> mystudentlist, ViewData viewData)
+        private StudentHolder studholder;
+
+        public StudentAdapter(List<Students> mystudentlist, ViewData viewData)
         {
-            this.mystudentlist = mystudentlist;
+            this.studentslist = mystudentlist;
             this.context = viewData;
-            
+
         }
 
-        public override int ItemCount => mystudentlist.Count;
+        public override int ItemCount => studentslist.Count;
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
             studholder = holder as StudentHolder;
-            studholder.Binddata(mystudentlist[position]);
-            studholder.linear.Click += Linear_Click;
-            data = mystudentlist[position];
-           
+            studholder.Binddata(studentslist[position]);
+
+            studholder.linear.Click += (s, e) => {
+
+                Intent i = new Intent(context, typeof(UpDeleteData));
+                i.PutExtra("StudentDetails", studentslist[position].sId);
+                context.StartActivity(i);
+            
+            };
+        
+
         }
 
-        private void Linear_Click(object sender, EventArgs e)
-        {
-         
-            Intent intent = new Intent(context,typeof(UpDeleteData));
-            intent.PutStringArrayListExtra("studentdata", data);
-            //Intent i = new Intent(context, typeof(UpDeleteData));
-            ////i.PutExtra("data", mystudentlist[e]);
-            //context.StartActivity(i);
-        }
-
+        
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
         {
             View view = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.studentsdetailslist, parent, false);
             return new StudentHolder(view);
         }
 
-      
-        /*private void OnClick(int obj)
-        {
-            if (ItemClick != null)
-            {
-                ItemClick?.Invoke(this, obj);
-            }
 
-            ItemClick?.Invoke(this, obj);
-        }*/
     }
 
     class StudentHolder : RecyclerView.ViewHolder
     {
-        public TextView studentDetails;
+        public TextView mstudentName;
+        public TextView mstudentSurName;
+        public TextView mstudentMarks;
+        public TextView mstudentId;
         public LinearLayout linear;
-       
+    
+
+
 
         public StudentHolder(View itemView) : base(itemView)
         {
-            studentDetails = itemView.FindViewById<TextView>(Resource.Id.studentName);
-            linear = itemView.FindViewById<LinearLayout>(Resource.Id.linearLayout2);
 
+            mstudentName = itemView.FindViewById<TextView>(Resource.Id.studentName);
+            mstudentSurName = itemView.FindViewById<TextView>(Resource.Id.studentSurName);
+            mstudentMarks =itemView.FindViewById<TextView>(Resource.Id.studentMarks);
+            mstudentId = itemView.FindViewById<TextView>(Resource.Id.studentId);
+            linear = itemView.FindViewById<LinearLayout>(Resource.Id.linearLayout2);
           
 
+
         }
 
-       
-        internal void Binddata(string v)
+
+        
+
+        internal void Binddata(Students students)
         {
-            studentDetails.Text = v;
+            mstudentName.Text = students.sName;
+            mstudentSurName.Text = students.sSurname;
+            mstudentMarks.Text = students.sMarks.ToString();
+            mstudentId.Text = students.sId.ToString();
         }
     }
-  
+
 
 
 }

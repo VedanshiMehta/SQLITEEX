@@ -20,8 +20,8 @@ namespace SQLITEEX
 
 
 
-        public List<string> mystudentlist;
-        ListView mystudListView;
+        private List<Students> studentslist;
+     
         RecyclerView.LayoutManager myLayoutmanager;
         private StudentAdapter sadapter;
         StudentDatabase sDB;
@@ -30,58 +30,38 @@ namespace SQLITEEX
         public int ssMarks;
         public int ssId;
 
+        
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.viewdatalayout);
 
             myRecycleView = FindViewById<RecyclerView>(Resource.Id.recyclerView1);
-            mystudListView = FindViewById<ListView>(Resource.Id.listView1);
+            
 
             GetStudentsDetails();
 
             myLayoutmanager = new LinearLayoutManager(this);
             myRecycleView.SetLayoutManager(myLayoutmanager);
 
-            sadapter = new StudentAdapter(mystudentlist,this);
+            sadapter = new StudentAdapter(studentslist, this);
             myRecycleView.SetAdapter(sadapter);
 
-            
-           
+
+
         }
 
-       
-
-       public List<string> GetStudentsDetails()
+        private List<Students> GetStudentsDetails()
         {
             sDB = new StudentDatabase();
-            mystudentlist = new List<string>();
-         
-        
+            var students = sDB.ReadStudents();
 
-            foreach (var data in sDB.ReadStudents())
-            {
-                sstudName = data.sName;
-                sstudSurName = data.sSurname;
-                ssMarks = int.Parse(data.sMarks.ToString());
-                ssId = int.Parse(data.sId.ToString());
+            studentslist = new List<Students>();
 
-                Console.WriteLine(sstudName);
-                Console.WriteLine(sstudSurName);
-                Console.WriteLine(ssMarks);
-                Console.WriteLine(ssId);
+            studentslist.AddRange(students);
 
-                mystudentlist.Add("Name: " + sstudName);
-                mystudentlist.Add("SurName: " + sstudSurName);
-                mystudentlist.Add("Marks: " + ssMarks);
-                mystudentlist.Add("Id: " + ssId);
-            }
-
-
-
-            return mystudentlist;
-
-
+            return studentslist;
         }
 
         

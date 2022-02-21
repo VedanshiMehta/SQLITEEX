@@ -13,7 +13,7 @@ using System.Text;
 namespace SQLITEEX
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
-    class UpDeleteData: Activity
+    class UpDeleteData : Activity
     {
         private EditText myUName;
         private EditText myUSurName;
@@ -22,15 +22,8 @@ namespace SQLITEEX
         private Button myUpdate;
         private Button myDelete;
         StudentDatabase sDB;
-        ViewData viewstuddata;
-        private string sutudName;
-        private string sutudSurName;
-        private int suMarks;
-        private int suId;
-
-
-        private List<string> myUstudentlist;
-
+        Students studentU;
+      
         protected override void OnCreate(Bundle savedInstanceState)
         {
 
@@ -38,9 +31,33 @@ namespace SQLITEEX
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.updatedeletedata);
             UIReference();
+          
+
+            if (Intent.Extras != null)
+            {
+
+                int message = Intent.Extras.GetInt(key: "StudentDetails", 0);
+              
+                if (message != 0)
+                {
+                    myUId.Text = message.ToString();
+
+                    sDB = new StudentDatabase();
+
+                    studentU = sDB.GetByUserId(message);
+
+                    myUName.Text = studentU.sName;
+                    myUSurName.Text = studentU.sSurname;
+                    myUMarks.Text = studentU.sMarks.ToString();
+
+
+
+                }
+            }
+
             UIClikevents();
 
-           
+
 
         }
 
@@ -52,40 +69,49 @@ namespace SQLITEEX
 
         private void MyDelete_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (studentU != null)
+            {
+                var isDeleted = sDB.DeleteStudents(studentU);
+                if (isDeleted == true)
+                {
+                    Toast.MakeText(this, "Data Deleted Succesfully", ToastLength.Short).Show();
+                }
+
+                else
+                {
+
+                    Toast.MakeText(this, "No action performed", ToastLength.Short).Show();
+
+                }
+            }
+
         }
 
         private void MyUpdate_Click(object sender, EventArgs e)
         {
-            sDB = new StudentDatabase();
-            viewstuddata = new ViewData();
-            Students studs = new Students();
 
-            sutudName = viewstuddata.sstudName;
-            sutudSurName = viewstuddata.sstudSurName;
-            suMarks = viewstuddata.ssMarks;
-            suId = viewstuddata.ssId;
+            if (studentU != null)
+            {
 
-            myUName.Text = sutudName ;
-            myUSurName.Text= sutudSurName;
-            myUMarks.Text = suMarks.ToString();
-            myUId.Text = suId.ToString();
+                studentU.sName = myUName.Text;
+                studentU.sSurname = myUSurName.Text;
+                studentU.sMarks = int.Parse(myUMarks.Text);
 
+                var isUpdated = sDB.UpdateStudents(studentU);
 
+                if (isUpdated == true)
+                {
+                    Toast.MakeText(this, "Data Updated Succesfully", ToastLength.Short).Show();
+                }
 
-             studs.sName = myUName.Text;
-             studs.sName = myUSurName.Text;
-             studs.sMarks = int.Parse(myUMarks.Text);
-             studs.sMarks = int.Parse(myUId.Text);
+                else
+                {
 
+                    Toast.MakeText(this, "No action performed", ToastLength.Short).Show();
 
-             sDB.UpdateStudents(studs);
-
-
-
-
-
-
+                }
+            }
+            
         }
 
         private void UIReference()
